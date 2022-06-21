@@ -26,26 +26,64 @@ function devide(a, b) {
 }
 
 function storeOperand() {
-    let currentOperand = operationDisplay.textContent
+    let currentOperand = operationDisplay.textContent;
     
-    if(currentOperator) {
-        operandA = currentOperand.slice(0, -1);
+    if(!currentOperator) {
+        operandA = currentOperand;
     }
     else {
-        operandB = currentOperand.slice(0, -1);
+        operandB = currentOperand;
     }
 
 
 }
 
+function displayOperand(operandId) {
+    const operand = document.querySelector(`#${operandId}`);
+    
+    if(operationDisplay.textContent[0] === '0') {
+        operationDisplay.textContent = '';
+    }
+    operationDisplay.textContent += ` ${operand.textContent}`;
+    
+}
 
+function storeOperator() {
+    currentOperator = operatorDisplay.textContent;
+}
+
+function displayOperator(operatorId) {
+    let op = ['+', '-', '×', '÷',];
+    let lastChar = operationDisplay.textContent[operationDisplay.textContent.length - 1]
+    let operator= document.querySelector(`#${operatorId}`);
+    let operatorFound = false;
+    
+    if(operandA) {
+        for(let i = 0; i < 4; i++){
+            if(op[i] === lastChar){
+                operationDisplay.textContent = operationDisplay.textContent.slice(0, -1);
+                operationDisplay.textContent += operator.textContent;
+                operatorFound = true;
+                break;
+            }
+        }
+
+        if(!operatorFound) {
+            operationDisplay.textContent += ` ${operator.textContent}`;
+        }
+    }
+    else {
+        operationDisplay.textContent += ` ${operator.textContent}`;
+    }
+}
 
 operands.forEach(operand => {
     operand.addEventListener('click', () => {
-        if(operationDisplay.textContent[0] === '0'){
-            operationDisplay.textContent = '';
-        }
-        operationDisplay.textContent += operand.textContent;
+       displayOperand(operand.id);
+       if(!currentOperator) {
+        storeOperator();
+       }
+
     })
 })
 
@@ -53,8 +91,9 @@ operators.forEach(operator => {
     operator.addEventListener('click', () => {
         operatorDisplay.textContent = operator.textContent; 
         storeOperand();
-        displayOperator(operator.id);
-        currentOperator = operator.textContent;
+        if(!operandB) {
+            displayOperator(operator.id);
+        }
         
     })
 })
