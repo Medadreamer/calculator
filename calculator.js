@@ -7,7 +7,7 @@ const operatorDisplay = document.querySelector('.operator_display');
 let result;
 let operandA;
 let operandB;
-let currentOperation;
+let currentOperator;
 
 function add(a, b) {
     return a + b;
@@ -25,14 +25,36 @@ function devide(a, b) {
     return a / b;
 }
 
+function storeOperand() {
+    let currentOperand = operationDisplay.textContent
+    
+    if(currentOperator) {
+        operandA = currentOperand.slice(0, -1);
+    }
+    else {
+        operandB = currentOperand.slice(0, -1);
+    }
+
+
+}
+
+
+
 operands.forEach(operand => {
     operand.addEventListener('click', () => {
+        if(operationDisplay.textContent[0] === '0'){
+            operationDisplay.textContent = '';
+        }
         operationDisplay.textContent += operand.textContent;
     })
 })
 
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
-        operatorDisplay.textContent= operator.textContent; 
+        operatorDisplay.textContent = operator.textContent; 
+        storeOperand();
+        displayOperator(operator.id);
+        currentOperator = operator.textContent;
+        
     })
 })
