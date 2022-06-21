@@ -5,12 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="calculator.js"></script>
+    <script src="calculator.js" defer></script>
     <title>Calculator</title>
 </head>
 <body>
     <div class="calculator">
-    <div class="display_screen"></div>
+    <div class="display_screen">
+        <div class="operation_display"></div>
+        <div class="current_operation"></div>
+        <div class="result">=</div>
+    </div>
     <div class="container">
         <div id="1" class="operand">1</div>
         <div id="2" class="operand">2</div>
