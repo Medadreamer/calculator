@@ -5,7 +5,7 @@ body {
 .calculator {
     display: block;
     background-color: #9f9ffd;
-    width: 40%;
+    width: 500px;
     height: fit-content;
     margin: 0 auto;
     padding: 1em 0;
@@ -16,7 +16,37 @@ body {
     height: 8em;
     background-color: #fff;
     margin: 0 auto 1em auto;
+    font-size: 18px;
+    padding: 0;
 }
+.operation_display {
+    height: 90%;
+    width: 50%;
+    background-color: inherit;
+}
+
+.display_container {
+    width: 50%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    background-color: inherit;
+}
+
+.display_container_content {
+    width: 100%;
+    background-color: inherit;
+    text-align: right;
+}
+
+/* .current_operation {
+
+}
+
+.result {
+
+} */
+
 
 div {
     display: flex;
@@ -29,6 +59,7 @@ div {
     margin: 5px;
     font-weight: bold;
     font-family: sans-serif;
+    font-size: 17px;
     
 }
 
