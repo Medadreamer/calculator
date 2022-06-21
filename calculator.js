@@ -5,6 +5,8 @@ const operationDisplay = document.querySelector('.operation_display');
 const operatorDisplay = document.querySelector('.operator_display');
 const resultDisplay = document.querySelector('.result')
 const equals = document.querySelector('#equals');
+const clearOperation = document.querySelector('#clear');
+const deleteOperation = document.querySelector('#delete');
 
 let result;
 let operandA;
@@ -70,22 +72,14 @@ function storeOperator() {
 }
 
 function displayOperator(operatorId) {
-    let op = ['+', '-', '×', '÷',];
-    let lastChar = operationDisplay.textContent[operationDisplay.textContent.length - 1]
-    let operator= document.querySelector(`#${operatorId}`);
-    let operatorFound = false;
+    let operator = document.querySelector(`#${operatorId}`);
     
     if(operandA) {
-        for(let i = 0; i < 4; i++){
-            if(op[i] === lastChar){
+        if (checkOperator()){
                 operationDisplay.textContent = operationDisplay.textContent.slice(0, -1);
                 operationDisplay.textContent += operator.textContent;
-                operatorFound = true;
-                break;
-            }
         }
-
-        if(!operatorFound) {
+        else {
             operationDisplay.textContent += ` ${operator.textContent}`;
         }
     }
@@ -121,6 +115,18 @@ function clear() {
     operandB = null;
 }
 
+function checkOperator() {
+    let op = ['+', '-', '×', '÷',];
+    let lastChar = operationDisplay.textContent[operationDisplay.textContent.length - 1]
+    
+    for(let i = 0; i < 4; i++){
+        if(op[i] === lastChar){
+            return true;
+        }
+    }
+
+    return false;
+}
 
 operands.forEach(operand => {
     operand.addEventListener('click', () => {
@@ -136,7 +142,10 @@ operands.forEach(operand => {
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
         operatorDisplay.textContent = operator.textContent; 
-        storeOperand();
+        console.log(operandB);
+        if(!checkOperator()){
+            storeOperand();
+        }
         if(!operandB) {
             displayOperator(operator.id);
         }
@@ -146,7 +155,6 @@ operators.forEach(operator => {
             displayResults();
             clear();
             displayOperand();
-            // storeOperator();
             storeOperand();
             displayOperator(operator.id);
         }
@@ -161,4 +169,8 @@ equals.addEventListener('click', () => {
         calculate();
         displayResults();
     }
+})
+
+clearOperation.addEventListener('click', () => {
+    clear();
 })
