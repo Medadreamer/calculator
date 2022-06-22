@@ -7,7 +7,9 @@ const resultDisplay = document.querySelector('.result')
 const equals = document.querySelector('#equals');
 const clearOperation = document.querySelector('#clear');
 const deleteOperation = document.querySelector('#delete');
+const dot = document.querySelector('#dot');
 
+let dotCount = 0;
 let result;
 let operandA;
 let operandB;
@@ -22,12 +24,15 @@ function multiply(a, b) {
 }
 
 function substract(a, b) {
-    return a - b;
+    const dec = 10 ** checkDecimal();
+    const substraction = (a * dec) - (b * dec)
+    return substraction / dec;
 }
 
 function devide(a, b) {
-    return a / b;
-}
+    const dec = 10 ** checkDecimal();
+    const division = (a * dec) / (b * dec)
+    return division;}
 
 function storeOperand() {
     const bothOperands = operationDisplay.textContent.split(currentOperator);
@@ -98,21 +103,50 @@ function calculate() {
     else if(currentOperator === '-') {
         result = substract(Number(operandA), Number(operandB));
     }
-    else {
+    else if(currentOperator === '÷' && Number(operandB) !== 0) {
         result = devide(Number(operandA), Number(operandB));
     }
 }
+
+function checkDecimal() {
+    let arrayOperandA = operandA.split('.');
+    let arrayOperandB = operandB.split('.');
+
+    if(arrayOperandA.length === 2 && arrayOperandA.length === 2) {
+        return Math.max(arrayOperandA[1].length, arrayOperandB[1].length);
+    }
+    else if(arrayOperandA.length === 2) {
+        return arrayOperandA[1].length;
+    }
+    else if(arrayOperandB.length === 2) {
+        return arrayOperandB[1].length;
+    }
+
+    return 0;
+} 
+
 
 function displayResults() {
     resultDisplay.textContent += `= ${result.toString().split('').join(' ')}`;
 }
 
-function clear() {
+function clean() {
     operationDisplay.textContent = '';
     resultDisplay.textContent = '';
     currentOperator = null;
     operandA = null;
     operandB = null;
+}
+
+function clear() {
+    currentOperator = null;
+    operandA = null;
+    operandB = null;
+    result = null;
+    dotCount = 0;
+    operationDisplay.textContent = '0';
+    operatorDisplay.textContent = '';
+    resultDisplay.textContent = '';
 }
 
 function checkOperator() {
@@ -131,6 +165,10 @@ function checkOperator() {
 function checkOperand() {
     let lastChar = operationDisplay.textContent[operationDisplay.textContent.length - 1]
 
+    if(lastChar === '.') {
+        return true;
+    }
+
     for (let i = 1; i < 10; i++) {
         if(i === Number(lastChar)) {
             return true;
@@ -144,10 +182,15 @@ function checkOperand() {
 operands.forEach(operand => {
     operand.addEventListener('click', () => {
 
+        if (result || result === 0) {
+            clear();
+        }
+
         displayOperand(operand.id);
         if(!currentOperator) {
             storeOperator();
         }
+
 
     })
 })
@@ -156,9 +199,12 @@ operands.forEach(operand => {
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
         operatorDisplay.textContent = operator.textContent; 
+        dotCount = 0;
+        
         if(!checkOperator()){
             storeOperand();
         }
+
         if(!operandB) {
             displayOperator(operator.id);
         }
@@ -166,7 +212,7 @@ operators.forEach(operator => {
         if(operandB) {
             calculate();
             displayResults();
-            clear();
+            clean();
             displayOperand();
             storeOperand();
             displayOperator(operator.id);
@@ -186,9 +232,7 @@ equals.addEventListener('click', () => {
 
 clearOperation.addEventListener('click', () => {
     clear();
-    result = null;
-    operationDisplay.textContent = '0';
-    operatorDisplay.textContent = '';
+
 })
 
 
@@ -202,8 +246,19 @@ deleteOperation.addEventListener('click', () =>{
 
     if(result || result === 0){
         clear();
-        result = null;
-        operationDisplay.textContent = '0';
-        operatorDisplay.textContent = '';
+
     }
+})
+
+dot.addEventListener('click', () => {
+    if(result || result === 0){
+        clear();
+
+    }
+
+    if(!checkOperator() && dotCount === 0) {
+        operationDisplay.textContent += ' .';
+        dotCount += 1;
+    }
+
 })
