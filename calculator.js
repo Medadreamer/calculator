@@ -9,7 +9,9 @@ const clearOperation = document.querySelector('#clear');
 const deleteOperation = document.querySelector('#delete');
 const dot = document.querySelector('#dot');
 
+let equalCount = 0;
 let dotCount = 0;
+let niceTry = 1;
 let result;
 let operandA;
 let operandB;
@@ -33,6 +35,10 @@ function devide(a, b) {
     const dec = 10 ** checkDecimal();
     const division = (a * dec) / (b * dec)
     return division;}
+
+function toThePower(a, b) {
+    return a ** b;
+}
 
 function storeOperand() {
     const bothOperands = operationDisplay.textContent.split(currentOperator);
@@ -103,8 +109,13 @@ function calculate() {
     else if(currentOperator === '-') {
         result = substract(Number(operandA), Number(operandB));
     }
-    else if(currentOperator === '÷' && Number(operandB) !== 0) {
-        result = devide(Number(operandA), Number(operandB));
+    else if(currentOperator === '÷') {
+        if(Number(operandB) === 0) {
+            niceTry += 1;
+        }
+        else {
+            result = devide(Number(operandA), Number(operandB));
+        }
     }
 }
 
@@ -123,11 +134,19 @@ function checkDecimal() {
     }
 
     return 0;
-} 
+}
 
 
 function displayResults() {
-    resultDisplay.textContent += `= ${result.toString().split('').join(' ')}`;
+    if(niceTry === 1) {
+        clear();
+        resultDisplay.textContent += 'Nice Try!!';
+    }
+    else {
+        resultDisplay.textContent = '';
+        resultDisplay.textContent += `= ${result.toString().split('').join(' ')}`;
+
+    }
 }
 
 function clean() {
@@ -179,8 +198,13 @@ function checkOperand() {
     return false;
 }
 
+
+
 operands.forEach(operand => {
     operand.addEventListener('click', () => {
+    equalCount = 0;
+    niceTry = 0;
+
 
         if (result || result === 0) {
             clear();
@@ -211,11 +235,18 @@ operators.forEach(operator => {
 
         if(operandB) {
             calculate();
+            if(niceTry) {
+                displayResults();
+
+            }
+            else {
             displayResults();
             clean();
             displayOperand();
             storeOperand();
-            displayOperator(operator.id);
+            displayOperator(operator.id);    
+            }
+
         }
         
     })
@@ -223,11 +254,18 @@ operators.forEach(operator => {
 
 
 equals.addEventListener('click', () => {
-    storeOperand()
-    if(operandB) {
-        calculate();
-        displayResults();
+    if(equalCount === 0) {
+            if(currentOperator) {
+                storeOperand();
+            }
+
+            if(operandB) {
+                calculate();
+                displayResults();
+                equalCount += 1;
+            }
     }
+
 })
 
 clearOperation.addEventListener('click', () => {
