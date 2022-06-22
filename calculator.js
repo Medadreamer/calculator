@@ -34,7 +34,7 @@ function storeOperand() {
     const currentOperand = operationDisplay.textContent;
 
     if(!operandA) {
-        if(result) {
+        if(result || result === 0) {
             operandA = result.toString()
             result = null;
         }
@@ -52,15 +52,15 @@ function storeOperand() {
 
 function displayOperand(operandId= 'default') {
     const operand = document.querySelector(`#${operandId}`);
-    if(!result) {
-        if(operationDisplay.textContent[0] === '0') {
+    if(!result && result !== 0) {
+        if(operationDisplay.textContent[0] === '0' && !checkOperator() && !checkOperand()) {
         operationDisplay.textContent = '';
         }
         operationDisplay.textContent += ` ${operand.textContent}`;
 
     }
 
-    if(result) {
+    if(result || result === 0) {
         operationDisplay.textContent += `${result.toString().split('').join(' ')}`
         
     }
@@ -128,12 +128,26 @@ function checkOperator() {
     return false;
 }
 
+function checkOperand() {
+    let lastChar = operationDisplay.textContent[operationDisplay.textContent.length - 1]
+
+    for (let i = 1; i < 10; i++) {
+        if(i === Number(lastChar)) {
+            return true;
+        }
+        
+    }
+
+    return false;
+}
+
 operands.forEach(operand => {
     operand.addEventListener('click', () => {
-       displayOperand(operand.id);
-       if(!currentOperator) {
-        storeOperator();
-       }
+
+        displayOperand(operand.id);
+        if(!currentOperator) {
+            storeOperator();
+        }
 
     })
 })
@@ -142,7 +156,6 @@ operands.forEach(operand => {
 operators.forEach(operator => {
     operator.addEventListener('click', () => {
         operatorDisplay.textContent = operator.textContent; 
-        console.log(operandB);
         if(!checkOperator()){
             storeOperand();
         }
@@ -173,4 +186,24 @@ equals.addEventListener('click', () => {
 
 clearOperation.addEventListener('click', () => {
     clear();
+    result = null;
+    operationDisplay.textContent = '0';
+    operatorDisplay.textContent = '';
+})
+
+
+deleteOperation.addEventListener('click', () =>{
+    if(checkOperator()) {
+        operatorDisplay.textContent = '';
+        currentOperator = null;
+        operandA = null;
+    }
+    operationDisplay.textContent = operationDisplay.textContent.slice(0, -1);
+
+    if(result || result === 0){
+        clear();
+        result = null;
+        operationDisplay.textContent = '0';
+        operatorDisplay.textContent = '';
+    }
 })
